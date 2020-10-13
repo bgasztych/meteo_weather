@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:meteo_weather/app.dart';
+import 'package:meteo_weather/logger.dart';
 
 void main() {
-  runApp(MyApp());
+  Logger.initLogger();
+  runApp(MeteoApp());
 }
 
 class MyApp extends StatelessWidget {
