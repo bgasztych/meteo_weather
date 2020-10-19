@@ -33,14 +33,12 @@ class HomeScreen extends StatelessWidget {
 
   Widget _buildItem(BuildContext context, FavouriteCityModel model, City city) {
     return Card(
-      child: Row(
-        children: [
-          SizedBox(width: 8),
-          Expanded(child: Text(city.city)),
-          IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => _onRemoveCityPressed(context, model, city))
-        ],
+      child: ListTile(
+        title: Text(city.city),
+        subtitle: Text(city.voivodeship),
+        trailing: IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => _onRemoveCityPressed(context, model, city)),
       ),
     );
   }
@@ -98,11 +96,13 @@ class CitySearchDelegate extends SearchDelegate {
 
     List<City> cities = _model.searchCities(query);
 
-    return ListView.builder(
+    return ListView.separated(
         itemCount: cities.length,
+        separatorBuilder: (context, index) => Divider(),
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(cities[index].city),
+            subtitle: Text(cities[index].voivodeship),
             trailing: IconButton(
                 icon: Icon(_model.contains(cities[index])
                     ? Icons.star
