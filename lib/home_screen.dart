@@ -3,6 +3,7 @@ import 'dart:math';
 import 'package:flutter/material.dart';
 import 'package:meteo_weather/favourites_city_model.dart';
 import 'package:meteo_weather/logger.dart';
+import 'package:meteo_weather/meteogram_screen.dart';
 import 'package:provider/provider.dart';
 
 class HomeScreen extends StatelessWidget {
@@ -39,8 +40,14 @@ class HomeScreen extends StatelessWidget {
         trailing: IconButton(
             icon: Icon(Icons.delete),
             onPressed: () => _onRemoveCityPressed(context, model, city)),
+        onTap: () => _onCityPressed(context, city),
       ),
     );
+  }
+
+  void _onCityPressed(BuildContext context, City city) {
+    Navigator.push(context,
+        MaterialPageRoute(builder: (context) => MeteogramScreen(city: city)));
   }
 
   void _onRemoveCityPressed(
