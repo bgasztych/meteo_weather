@@ -28,6 +28,8 @@ class FavouriteCityModel extends ChangeNotifier {
 
   City get(int position) => _favouritesCities[position];
 
+  bool contains(City city) => _favouritesCities.contains(city);
+
   int length() => _favouritesCities.length;
 
   List<City> searchCities(String query) {

@@ -103,8 +103,21 @@ class CitySearchDelegate extends SearchDelegate {
         itemBuilder: (context, index) {
           return ListTile(
             title: Text(cities[index].city),
+            trailing: IconButton(
+                icon: Icon(_model.contains(cities[index])
+                    ? Icons.star
+                    : Icons.star_border),
+                onPressed: () => _onCityPressed(context, cities[index])),
+            onTap: () => _onCityPressed(context, cities[index]),
           );
         });
+  }
+
+  void _onCityPressed(BuildContext context, City city) {
+    if (!_model.contains(city)) {
+      _model.add(city);
+    }
+    close(context, null);
   }
 
   @override
