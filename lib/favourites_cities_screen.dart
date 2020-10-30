@@ -1,33 +1,51 @@
 import 'dart:math';
 
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:meteo_weather/blocs/bloc.dart';
 import 'package:meteo_weather/favourites_city_model.dart';
 import 'package:meteo_weather/logger.dart';
 import 'package:meteo_weather/meteogram_screen.dart';
+import 'package:meteo_weather/models/city.dart';
 import 'package:provider/provider.dart';
 
-class HomeScreen extends StatelessWidget {
+class FavouritesCitiesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Consumer<FavouriteCityModel>(
-      builder: (context, favouriteCityModel, child) => Scaffold(
-        appBar: AppBar(
-          title: Text("Favourites"),
-          actions: [
-            IconButton(
-              icon: Icon(Icons.search),
-              onPressed: () => showSearch(
-                context: context,
-                delegate: CitySearchDelegate(favouriteCityModel),
-              ),
-            ),
-          ],
-        ),
-        body: ListView.builder(
-          itemCount: favouriteCityModel.length(),
-          itemBuilder: (BuildContext context, int position) => _buildItem(
-              context, favouriteCityModel, favouriteCityModel.get(position)),
-        ),
+    final FavouritesCitiesBloc _favouriteCitiesBloc = BlocProvider.of<
+        FavouritesCitiesBloc>(context);
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Favourites"),
+        actions: [
+          // IconButton(
+          //   icon: Icon(Icons.search),
+          //   onPressed: () => showSearch(
+          //     context: context,
+          //     delegate: CitySearchDelegate(favouriteCityModel),
+          //   ),
+          // ),
+        ],
+      ),
+      body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
+        // ignore: missing_return
+          builder: (context, state) {
+            if (state is FavouritesCitiesInitial) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is FavouritesCitiesSuccess) {
+              if (state.cities.isEmpty) {
+                return Center(child: Text("No favourites cities"));
+              }
+              return ListView.builder(
+                itemCount: state.cities.length,
+                itemBuilder: (BuildContext context, int index) => FavouriteCityWidget(city: state.cities[index]),
+              );
+            }
+            if (state is FavouritesCitiesFailure) {
+              return Center(child: Text("Failed to fetch favourites cities"));
+            }
+      }
       ),
     );
   }
@@ -50,12 +68,13 @@ class HomeScreen extends StatelessWidget {
         MaterialPageRoute(builder: (context) => MeteogramScreen(city: city)));
   }
 
-  void _onRemoveCityPressed(
-      BuildContext context, FavouriteCityModel model, City city) {
+  void _onRemoveCityPressed(BuildContext context, FavouriteCityModel model,
+      City city) {
     showDialog(
         context: context,
         barrierDismissible: false,
-        builder: (context) => AlertDialog(
+        builder: (context) =>
+            AlertDialog(
               title: Text("Remove from favourites?"),
               actions: [
                 FlatButton(
@@ -69,6 +88,26 @@ class HomeScreen extends StatelessWidget {
                     child: Text("Remove"))
               ],
             ));
+  }
+}
+
+class FavouriteCityWidget extends StatelessWidget {
+  final City city;
+
+  const FavouriteCityWidget({Key key, @required this.city}) : super(key: key);
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      child: ListTile(
+        title: Text(city.city),
+        subtitle: Text(city.voivodeship),
+        // trailing: IconButton(
+        //     icon: Icon(Icons.delete),
+        //     onPressed: () => _onRemoveCityPressed(context, model, city)),
+        // onTap: () => _onCityPressed(context, city),
+      ),
+    );
   }
 }
 

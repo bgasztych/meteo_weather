@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_weather/logger.dart';
+import 'package:meteo_weather/models/city.dart';
 
 class FavouriteCityModel extends ChangeNotifier {
   static List<City> cities = [
@@ -42,34 +43,4 @@ class FavouriteCityModel extends ChangeNotifier {
     });
     return matchCities;
   }
-}
-
-@immutable
-class City {
-  final int id;
-  final String city;
-  final String voivodeship;
-  final String imageUri;
-
-  City(this.id, this.city, this.voivodeship, this.imageUri);
-
-  @override
-  bool operator ==(Object other) =>
-      identical(this, other) ||
-          other is City && runtimeType == other.runtimeType && id == other.id;
-
-  @override
-  int get hashCode => id.hashCode;
-
-  @override
-  String toString() {
-    return 'City{id: $id, city: $city, voivodeship: $voivodeship, imageUri: $imageUri}';
-  }
-
-  Map toJson() => {
-    'id': id,
-    'city': city,
-    'voivodeship': voivodeship,
-    'imageUri': imageUri
-  };
 }

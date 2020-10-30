@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:meteo_weather/favourites_city_model.dart';
+import 'package:meteo_weather/models/city.dart';
 import 'package:photo_view/photo_view.dart';
 
 class MeteogramScreen extends StatefulWidget {
