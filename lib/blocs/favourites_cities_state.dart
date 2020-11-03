@@ -8,7 +8,7 @@ abstract class FavouritesCitiesState extends Equatable {
   List<Object> get props => [];
 }
 
-class FavouritesCitiesInitial extends FavouritesCitiesState {}
+class FavouritesCitiesLoading extends FavouritesCitiesState {}
 
 class FavouritesCitiesFailure extends FavouritesCitiesState {}
 

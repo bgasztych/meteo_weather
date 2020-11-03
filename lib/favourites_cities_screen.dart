@@ -30,7 +30,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
       body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
         // ignore: missing_return
           builder: (context, state) {
-            if (state is FavouritesCitiesInitial) {
+            if (state is FavouritesCitiesLoading) {
               return Center(child: CircularProgressIndicator());
             }
             if (state is FavouritesCitiesSuccess) {

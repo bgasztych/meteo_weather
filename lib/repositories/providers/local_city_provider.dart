@@ -29,7 +29,6 @@ class LocalCityProvider implements CityProvider {
 
   @override
   Future<void> removeCityFromFavourites(City city) async {
-    await Future.delayed(Duration(seconds: 1));
     _favouritedCities.remove(city);
   }
 
