@@ -2,12 +2,13 @@ import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_weather/blocs/bloc.dart';
 import 'package:meteo_weather/favourites_city_model.dart';
 import 'package:meteo_weather/logger.dart';
 import 'package:meteo_weather/meteogram_screen.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:provider/provider.dart';
+
+import 'blocs/blocs.dart';
 
 class FavouritesCitiesScreen extends StatelessWidget {
   @override
@@ -18,17 +19,16 @@ class FavouritesCitiesScreen extends StatelessWidget {
       appBar: AppBar(
         title: Text("Favourites"),
         actions: [
-          // IconButton(
-          //   icon: Icon(Icons.search),
-          //   onPressed: () => showSearch(
-          //     context: context,
-          //     delegate: CitySearchDelegate(favouriteCityModel),
-          //   ),
-          // ),
+          IconButton(
+            icon: Icon(Icons.search),
+            onPressed: () => showSearch(
+              context: context,
+              delegate: CitySearchDelegate(_favouriteCitiesBloc),
+            ),
+          ),
         ],
       ),
       body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
-        // ignore: missing_return
           builder: (context, state) {
             if (state is FavouritesCitiesLoading) {
               return Center(child: CircularProgressIndicator());
@@ -46,6 +46,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
             if (state is FavouritesCitiesFailure) {
               return Center(child: Text("Failed to fetch favourites cities"));
             }
+            return Container();
           }),
     );
   }
@@ -79,7 +80,7 @@ class FavouriteCityWidget extends StatelessWidget {
                                   child: Text("Cancel")),
                               FlatButton(
                                   onPressed: () {
-                                    _bloc.add(FavouritesCitiesRemovedCity(city));
+                                    _bloc.add(FavouritesCitiesRemoved(city));
                                     Navigator.pop(context);
                                   },
                                   child: Text("Remove"))
@@ -95,9 +96,9 @@ class FavouriteCityWidget extends StatelessWidget {
 }
 
 class CitySearchDelegate extends SearchDelegate {
-  FavouriteCityModel _model;
+  final Bloc<FavouritesCitiesEvent, FavouritesCitiesState> cityBloc;
 
-  CitySearchDelegate(this._model);
+  CitySearchDelegate(this.cityBloc);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -123,30 +124,42 @@ class CitySearchDelegate extends SearchDelegate {
       );
     }
 
-    List<City> cities = _model.searchCities(query);
+    cityBloc.add(FavouritesCitiesSearch(query));
 
-    return ListView.separated(
-        itemCount: cities.length,
-        separatorBuilder: (context, index) => Divider(),
-        itemBuilder: (context, index) {
-          return ListTile(
-            title: Text(cities[index].city),
-            subtitle: Text(cities[index].voivodeship),
-            trailing: IconButton(
-                icon: Icon(_model.contains(cities[index])
-                    ? Icons.star
-                    : Icons.star_border),
-                onPressed: () => _onCityPressed(context, cities[index])),
-            onTap: () => _onCityPressed(context, cities[index]),
-          );
+    return BlocBuilder(
+      cubit: cityBloc,
+        // ignore: missing_return
+        builder: (context, state) {
+          if (state is FavouritesCitiesLoading) {
+            return Center(child: CircularProgressIndicator());
+          }
+          if (state is FavouritesCitiesSearchSuccess) {
+            if (state.cities.isEmpty) {
+              return Center(child: Text("No results found"));
+            }
+            return ListView.separated(
+                itemCount: state.cities.length,
+                separatorBuilder: (context, index) => Divider(),
+                itemBuilder: (context, index) {
+                  return ListTile(
+                    title: Text(state.cities[index].city),
+                    subtitle: Text(state.cities[index].voivodeship),
+                    // trailing: IconButton(
+                    //     icon: Icon(_model.contains(cities[index])
+                    //         ? Icons.star
+                    //         : Icons.star_border),
+                    //     onPressed: () => _onCityPressed(context, cities[index])),
+                    onTap: () {
+                      cityBloc.add(FavouritesCitiesAdded(state.cities[index]));
+                      close(context, null);
+                    },
+                  );
+                });
+          }
+          if (state is FavouritesCitiesFailure) {
+            return Center(child: Text("Failed to fetch filtered cities"));
+          }
         });
-  }
-
-  void _onCityPressed(BuildContext context, City city) {
-    if (!_model.contains(city)) {
-      _model.add(city);
-    }
-    close(context, null);
   }
 
   @override

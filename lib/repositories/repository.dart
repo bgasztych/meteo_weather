@@ -2,23 +2,33 @@ import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/providers/city_provider.dart';
 
 class Repository implements CityProvider{
-  final CityProvider localCityProvider;
+  final CityProvider _localCityProvider;
 
-  Repository(this.localCityProvider);
+  Repository(this._localCityProvider);
 
   @override
   Future<List<City>> getAllCities() async {
-    return localCityProvider.getAllCities();
+    return _localCityProvider.getAllCities();
   }
 
   @override
-  Future<List<City>> getFavouritesCities() {
-    return localCityProvider.getFavouritesCities();
+  Future<List<City>> getFavouritesCities() async {
+    return _localCityProvider.getFavouritesCities();
   }
 
   @override
-  Future<void> removeCityFromFavourites(City city) {
-    return localCityProvider.removeCityFromFavourites(city);
+  Future<List<City>> getFilteredCities(String query) async {
+    return _localCityProvider.getFilteredCities(query);
+  }
+
+  @override
+  Future<void> removeCityFromFavourites(City city) async {
+    return _localCityProvider.removeCityFromFavourites(city);
+  }
+
+  @override
+  Future<void> addCityToFavourites(City city) async {
+    return _localCityProvider.addCityToFavourites(city);
   }
 
 }

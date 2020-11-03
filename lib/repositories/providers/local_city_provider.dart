@@ -28,8 +28,18 @@ class LocalCityProvider implements CityProvider {
   }
 
   @override
+  Future<List<City>> getFilteredCities(String query) async {
+    return List.unmodifiable((await getAllCities()).where(
+        (city) => city.city.toLowerCase().startsWith(query.toLowerCase())));
+  }
+
+  @override
   Future<void> removeCityFromFavourites(City city) async {
     _favouritedCities.remove(city);
   }
 
+  @override
+  Future<void> addCityToFavourites(City city) async {
+    _favouritedCities.add(city);
+  }
 }
