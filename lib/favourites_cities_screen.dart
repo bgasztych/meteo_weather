@@ -13,7 +13,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FavouritesCitiesBloc _favouriteCitiesBloc =
-        BlocProvider.of<FavouritesCitiesBloc>(context);
+    BlocProvider.of<FavouritesCitiesBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Favourites"),
@@ -28,52 +28,26 @@ class FavouritesCitiesScreen extends StatelessWidget {
         ],
       ),
       body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
-          // ignore: missing_return
+        // ignore: missing_return
           builder: (context, state) {
-        if (state is FavouritesCitiesInitial) {
-          return Center(child: CircularProgressIndicator());
-        }
-        if (state is FavouritesCitiesSuccess) {
-          if (state.cities.isEmpty) {
-            return Center(child: Text("No favourites cities"));
-          }
-          return ListView.builder(
-            itemCount: state.cities.length,
-            itemBuilder: (BuildContext context, int index) =>
-                FavouriteCityWidget(city: state.cities[index]),
-          );
-        }
-        if (state is FavouritesCitiesFailure) {
-          return Center(child: Text("Failed to fetch favourites cities"));
-        }
-      }),
+            if (state is FavouritesCitiesInitial) {
+              return Center(child: CircularProgressIndicator());
+            }
+            if (state is FavouritesCitiesSuccess) {
+              if (state.cities.isEmpty) {
+                return Center(child: Text("No favourites cities"));
+              }
+              return ListView.builder(
+                itemCount: state.cities.length,
+                itemBuilder: (BuildContext context, int index) =>
+                    FavouriteCityWidget(city: state.cities[index]),
+              );
+            }
+            if (state is FavouritesCitiesFailure) {
+              return Center(child: Text("Failed to fetch favourites cities"));
+            }
+          }),
     );
-  }
-
-  void _onCityPressed(BuildContext context, City city) {
-    Navigator.push(context,
-        MaterialPageRoute(builder: (context) => MeteogramScreen(city: city)));
-  }
-
-  void _onRemoveCityPressed(
-      BuildContext context, FavouriteCityModel model, City city) {
-    showDialog(
-        context: context,
-        barrierDismissible: false,
-        builder: (context) => AlertDialog(
-              title: Text("Remove from favourites?"),
-              actions: [
-                FlatButton(
-                    onPressed: () => Navigator.pop(context),
-                    child: Text("Cancel")),
-                FlatButton(
-                    onPressed: () {
-                      model.remove(city);
-                      Navigator.pop(context);
-                    },
-                    child: Text("Remove"))
-              ],
-            ));
   }
 }
 
@@ -85,18 +59,37 @@ class FavouriteCityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FavouritesCitiesBloc _bloc =
-        BlocProvider.of<FavouritesCitiesBloc>(context);
+    BlocProvider.of<FavouritesCitiesBloc>(context);
     return Card(
       child: ListTile(
           title: Text(city.city),
           subtitle: Text(city.voivodeship),
-          // trailing: IconButton(
-          //     icon: Icon(Icons.delete),
-          //     onPressed: () => _onRemoveCityPressed(context, model, city)),
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MeteogramScreen(city: city)))),
+          trailing: IconButton(
+              icon: Icon(Icons.delete),
+              onPressed: () =>
+                  showDialog(
+                      context: context,
+                      barrierDismissible: false,
+                      builder: (context) =>
+                          AlertDialog(
+                            title: Text("Remove from favourites?"),
+                            actions: [
+                              FlatButton(
+                                  onPressed: () => Navigator.pop(context),
+                                  child: Text("Cancel")),
+                              FlatButton(
+                                  onPressed: () {
+                                    _bloc.add(FavouritesCitiesRemovedCity(city));
+                                    Navigator.pop(context);
+                                  },
+                                  child: Text("Remove"))
+                            ],
+                          ))),
+          onTap: () =>
+              Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                      builder: (context) => MeteogramScreen(city: city)))),
     );
   }
 }

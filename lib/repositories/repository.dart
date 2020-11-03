@@ -16,4 +16,9 @@ class Repository implements CityProvider{
     return localCityProvider.getFavouritesCities();
   }
 
+  @override
+  Future<void> removeCityFromFavourites(City city) {
+    return localCityProvider.removeCityFromFavourites(city);
+  }
+
 }

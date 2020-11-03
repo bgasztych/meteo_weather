@@ -2,6 +2,11 @@ import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/providers/city_provider.dart';
 
 class LocalCityProvider implements CityProvider {
+  final List<City> _favouritedCities = [
+    City(0, "Wrocław", "dolnoślaskie", null),
+    City(6, "Wronki", "dolnoślaskie", null),
+  ];
+
   @override
   Future<List<City>> getAllCities() async {
     await Future.delayed(Duration(seconds: 2));
@@ -19,10 +24,13 @@ class LocalCityProvider implements CityProvider {
   @override
   Future<List<City>> getFavouritesCities() async {
     await Future.delayed(Duration(seconds: 2));
-    return [
-      City(0, "Wrocław", "dolnoślaskie", null),
-      City(6, "Wronki", "dolnoślaskie", null),
-    ];
+    return List.unmodifiable(_favouritedCities);
+  }
+
+  @override
+  Future<void> removeCityFromFavourites(City city) async {
+    await Future.delayed(Duration(seconds: 1));
+    _favouritedCities.remove(city);
   }
 
 }

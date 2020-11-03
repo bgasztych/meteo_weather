@@ -31,6 +31,12 @@ class FavouritesCitiesBloc
       } catch (_) {
         yield FavouritesCitiesFailure();
       }
+    } else if (event is FavouritesCitiesRemovedCity) {
+      if (state is FavouritesCitiesSuccess) {
+        final updatedCities = (state as FavouritesCitiesSuccess).cities.where((city) => city != event.city).toList();
+        await repository.removeCityFromFavourites(event.city);
+        yield FavouritesCitiesSuccess(cities: updatedCities);
+      }
     }
   }
 
