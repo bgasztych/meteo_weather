@@ -38,7 +38,7 @@ class FavouritesCitiesBloc
   Stream<FavouritesCitiesState> _mapFavouritesCitiesAddedToState(
       FavouritesCitiesAdded event) async* {
     if (state is FavouritesCitiesSuccess) {
-      final List<City> updatedCities = (state as FavouritesCitiesSuccess).cities
+      final List<City> updatedCities = List.from((state as FavouritesCitiesSuccess).cities)
         ..add(event.city);
       yield FavouritesCitiesSuccess(cities: updatedCities);
       repository.addCityToFavourites(event.city);
@@ -48,8 +48,8 @@ class FavouritesCitiesBloc
   Stream<FavouritesCitiesState> _mapFavouritesCitiesRemovedToState(
       FavouritesCitiesRemoved event) async* {
     if (state is FavouritesCitiesSuccess) {
-      final List<City> updatedCities = (state as FavouritesCitiesSuccess)
-          .cities
+      final List<City> updatedCities = List.from((state as FavouritesCitiesSuccess)
+          .cities)
           .where((city) => city != event.city);
       yield FavouritesCitiesSuccess(cities: updatedCities);
       repository.removeCityFromFavourites(event.city);

@@ -9,6 +9,8 @@ abstract class FilteredCitiesState extends Equatable {
 
 class FilteredCitiesLoading extends FilteredCitiesState {}
 
+class FilteredCitiesFailure extends FilteredCitiesState {}
+
 class FilteredCitiesSuccess extends FilteredCitiesState {
   final List<City> cities;
 

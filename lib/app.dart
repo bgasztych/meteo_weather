@@ -20,11 +20,15 @@ class MeteoApp extends StatelessWidget {
             primarySwatch: Colors.blue,
             visualDensity: VisualDensity.adaptivePlatformDensity,
           ),
-          home: BlocProvider(
-              create: (context) => FavouritesCitiesBloc(
-                  RepositoryProvider.of<Repository>(context))
-                ..add(FavouritesCitiesFetched()),
-              child: FavouritesCitiesScreen()),
+          home: MultiBlocProvider(providers: [
+            BlocProvider(
+                create: (context) => FavouritesCitiesBloc(
+                    RepositoryProvider.of<Repository>(context))
+                  ..add(FavouritesCitiesFetched())),
+            BlocProvider(
+                create: (context) =>
+                    FilteredCitiesBloc(RepositoryProvider.of(context))),
+          ], child: FavouritesCitiesScreen()),
         );
       }),
     );

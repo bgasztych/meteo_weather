@@ -14,21 +14,28 @@ class FavouritesCitiesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FavouritesCitiesBloc _favouriteCitiesBloc =
-    BlocProvider.of<FavouritesCitiesBloc>(context);
+        BlocProvider.of<FavouritesCitiesBloc>(context);
+    final FilteredCitiesBloc _filteredCitiesBloc =
+        BlocProvider.of<FilteredCitiesBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text("Favourites"),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
-            onPressed: () => showSearch(
-              context: context,
-              delegate: CitySearchDelegate(_favouriteCitiesBloc),
-            ),
+            onPressed: () async {
+              final city = await showSearch<City>(
+                  context: context,
+                  delegate: CitySearchDelegate(_filteredCitiesBloc));
+              if (city != null) {
+                _favouriteCitiesBloc.add(FavouritesCitiesAdded(city));
+              }
+            },
           ),
         ],
       ),
       body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
+          cubit: _favouriteCitiesBloc,
           builder: (context, state) {
             if (state is FavouritesCitiesLoading) {
               return Center(child: CircularProgressIndicator());
@@ -60,45 +67,42 @@ class FavouriteCityWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     final FavouritesCitiesBloc _bloc =
-    BlocProvider.of<FavouritesCitiesBloc>(context);
+        BlocProvider.of<FavouritesCitiesBloc>(context);
     return Card(
       child: ListTile(
           title: Text(city.city),
           subtitle: Text(city.voivodeship),
           trailing: IconButton(
               icon: Icon(Icons.delete),
-              onPressed: () =>
-                  showDialog(
-                      context: context,
-                      barrierDismissible: false,
-                      builder: (context) =>
-                          AlertDialog(
-                            title: Text("Remove from favourites?"),
-                            actions: [
-                              FlatButton(
-                                  onPressed: () => Navigator.pop(context),
-                                  child: Text("Cancel")),
-                              FlatButton(
-                                  onPressed: () {
-                                    _bloc.add(FavouritesCitiesRemoved(city));
-                                    Navigator.pop(context);
-                                  },
-                                  child: Text("Remove"))
-                            ],
-                          ))),
-          onTap: () =>
-              Navigator.push(
-                  context,
-                  MaterialPageRoute(
-                      builder: (context) => MeteogramScreen(city: city)))),
+              onPressed: () => showDialog(
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => AlertDialog(
+                        title: Text("Remove from favourites?"),
+                        actions: [
+                          FlatButton(
+                              onPressed: () => Navigator.pop(context),
+                              child: Text("Cancel")),
+                          FlatButton(
+                              onPressed: () {
+                                _bloc.add(FavouritesCitiesRemoved(city));
+                                Navigator.pop(context);
+                              },
+                              child: Text("Remove"))
+                        ],
+                      ))),
+          onTap: () => Navigator.push(
+              context,
+              MaterialPageRoute(
+                  builder: (context) => MeteogramScreen(city: city)))),
     );
   }
 }
 
-class CitySearchDelegate extends SearchDelegate {
-  final Bloc<FavouritesCitiesEvent, FavouritesCitiesState> cityBloc;
+class CitySearchDelegate extends SearchDelegate<City> {
+  final Bloc<FilteredCitiesEvent, FilteredCitiesState> filteredBloc;
 
-  CitySearchDelegate(this.cityBloc);
+  CitySearchDelegate(this.filteredBloc);
 
   @override
   List<Widget> buildActions(BuildContext context) {
@@ -124,16 +128,16 @@ class CitySearchDelegate extends SearchDelegate {
       );
     }
 
-    cityBloc.add(FavouritesCitiesSearch(query));
+    filteredBloc.add(FilteredCitiesFiltered(query));
 
     return BlocBuilder(
-      cubit: cityBloc,
+        cubit: filteredBloc,
         // ignore: missing_return
         builder: (context, state) {
-          if (state is FavouritesCitiesLoading) {
+          if (state is FilteredCitiesLoading) {
             return Center(child: CircularProgressIndicator());
           }
-          if (state is FavouritesCitiesSearchSuccess) {
+          if (state is FilteredCitiesSuccess) {
             if (state.cities.isEmpty) {
               return Center(child: Text("No results found"));
             }
@@ -149,14 +153,11 @@ class CitySearchDelegate extends SearchDelegate {
                     //         ? Icons.star
                     //         : Icons.star_border),
                     //     onPressed: () => _onCityPressed(context, cities[index])),
-                    onTap: () {
-                      cityBloc.add(FavouritesCitiesAdded(state.cities[index]));
-                      close(context, null);
-                    },
+                    onTap: () => close(context, state.cities[index]),
                   );
                 });
           }
-          if (state is FavouritesCitiesFailure) {
+          if (state is FilteredCitiesFailure) {
             return Center(child: Text("Failed to fetch filtered cities"));
           }
         });
