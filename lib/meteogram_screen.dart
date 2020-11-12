@@ -56,6 +56,7 @@ class _MeteogramScreenState extends State<MeteogramScreen> {
 
 Widget _meteogramWithLegend(BuildContext context) {
   return PhotoView.customChild(
+    minScale: PhotoViewComputedScale.contained,
     backgroundDecoration: BoxDecoration(color: Colors.white),
     child: Row(
       children: [
@@ -76,6 +77,7 @@ Widget _meteogramWithLegend(BuildContext context) {
 
 Widget _meteogram() {
   return PhotoView(
+    minScale: PhotoViewComputedScale.contained,
     backgroundDecoration: BoxDecoration(color: Colors.white),
     imageProvider: AssetImage('lib/resources/images/meteogram.png'),
   );
