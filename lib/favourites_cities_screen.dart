@@ -6,6 +6,7 @@ import 'package:meteo_weather/favourites_city_model.dart';
 import 'package:meteo_weather/logger.dart';
 import 'package:meteo_weather/meteogram_screen.dart';
 import 'package:meteo_weather/models/city.dart';
+import 'package:meteo_weather/widgets/delete_confirmation_dialog.dart';
 import 'package:provider/provider.dart';
 
 import 'blocs/blocs.dart';
@@ -75,22 +76,12 @@ class FavouriteCityWidget extends StatelessWidget {
         trailing: IconButton(
             icon: Icon(Icons.delete),
             onPressed: () => showDialog(
-                context: context,
-                barrierDismissible: false,
-                builder: (context) => AlertDialog(
-                      title: Text("Remove from favourites?"),
-                      actions: [
-                        FlatButton(
-                            onPressed: () => Navigator.pop(context),
-                            child: Text("Cancel")),
-                        FlatButton(
-                            onPressed: () {
-                              _bloc.add(FavouritesCitiesRemoved(city));
-                              Navigator.pop(context);
-                            },
-                            child: Text("Remove"))
-                      ],
-                    ))),
+                  context: context,
+                  barrierDismissible: false,
+                  builder: (context) => DeleteConfirmationDialog(
+                      deleteCallback: () =>
+                          _bloc.add(FavouritesCitiesRemoved(city))),
+                )),
         onTap: () => Navigator.push(
           context,
           MaterialPageRoute(

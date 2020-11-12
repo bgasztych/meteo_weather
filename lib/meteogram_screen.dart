@@ -5,6 +5,7 @@ import 'package:meteo_weather/models/city.dart';
 import 'package:photo_view/photo_view.dart';
 
 import 'blocs/blocs.dart';
+import 'widgets/delete_confirmation_dialog.dart';
 
 class MeteogramScreen extends StatefulWidget {
   final City city;
@@ -34,15 +35,21 @@ class _MeteogramScreenState extends State<MeteogramScreen> {
               icon: Icon(Icons.map),
               onPressed: () => setState(
                   () => widget.isLegendVisible = !widget.isLegendVisible)),
-          IconButton(icon: Icon(Icons.delete), onPressed: () {
-            _bloc.add(FavouritesCitiesRemoved(widget.city));
-            Navigator.pop(context);
-          })
+          IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) =>
+                    DeleteConfirmationDialog(deleteCallback: () {
+                      _bloc.add(FavouritesCitiesRemoved(widget.city));
+                      Navigator.pop(context);
+                    })),
+          )
         ],
       ),
-      body: widget.isLegendVisible
-          ? _meteogramWithLegend(context)
-          : _meteogram(),
+      body:
+          widget.isLegendVisible ? _meteogramWithLegend(context) : _meteogram(),
     );
   }
 }
