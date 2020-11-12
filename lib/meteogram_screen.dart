@@ -1,7 +1,10 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_weather/favourites_city_model.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:photo_view/photo_view.dart';
+
+import 'blocs/blocs.dart';
 
 class MeteogramScreen extends StatefulWidget {
   final City city;
@@ -18,8 +21,11 @@ class MeteogramScreen extends StatefulWidget {
 }
 
 class _MeteogramScreenState extends State<MeteogramScreen> {
+  FavouritesCitiesBloc _bloc;
+
   @override
   Widget build(BuildContext context) {
+    _bloc = _bloc ?? BlocProvider.of<FavouritesCitiesBloc>(context);
     return Scaffold(
       appBar: AppBar(
         title: Text(widget.city.city),
@@ -27,7 +33,11 @@ class _MeteogramScreenState extends State<MeteogramScreen> {
           IconButton(
               icon: Icon(Icons.map),
               onPressed: () => setState(
-                  () => widget.isLegendVisible = !widget.isLegendVisible))
+                  () => widget.isLegendVisible = !widget.isLegendVisible)),
+          IconButton(icon: Icon(Icons.delete), onPressed: () {
+            _bloc.add(FavouritesCitiesRemoved(widget.city));
+            Navigator.pop(context);
+          })
         ],
       ),
       body: widget.isLegendVisible

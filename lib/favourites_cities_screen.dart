@@ -70,31 +70,36 @@ class FavouriteCityWidget extends StatelessWidget {
         BlocProvider.of<FavouritesCitiesBloc>(context);
     return Card(
       child: ListTile(
-          title: Text(city.city),
-          subtitle: Text(city.voivodeship),
-          trailing: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => showDialog(
-                  context: context,
-                  barrierDismissible: false,
-                  builder: (context) => AlertDialog(
-                        title: Text("Remove from favourites?"),
-                        actions: [
-                          FlatButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text("Cancel")),
-                          FlatButton(
-                              onPressed: () {
-                                _bloc.add(FavouritesCitiesRemoved(city));
-                                Navigator.pop(context);
-                              },
-                              child: Text("Remove"))
-                        ],
-                      ))),
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MeteogramScreen(city: city)))),
+        title: Text(city.city),
+        subtitle: Text(city.voivodeship),
+        trailing: IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => showDialog(
+                context: context,
+                barrierDismissible: false,
+                builder: (context) => AlertDialog(
+                      title: Text("Remove from favourites?"),
+                      actions: [
+                        FlatButton(
+                            onPressed: () => Navigator.pop(context),
+                            child: Text("Cancel")),
+                        FlatButton(
+                            onPressed: () {
+                              _bloc.add(FavouritesCitiesRemoved(city));
+                              Navigator.pop(context);
+                            },
+                            child: Text("Remove"))
+                      ],
+                    ))),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                    value: _bloc,
+                    child: MeteogramScreen(city: city),
+                  )),
+        ),
+      ),
     );
   }
 }
