@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_weather/favourites_city_model.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:photo_view/photo_view.dart';
 
@@ -48,13 +47,12 @@ class _MeteogramScreenState extends State<MeteogramScreen> {
           )
         ],
       ),
-      body:
-          widget.isLegendVisible ? _meteogramWithLegend(context) : _meteogram(),
+      body: _meteogram(context, widget.isLegendVisible),
     );
   }
 }
 
-Widget _meteogramWithLegend(BuildContext context) {
+Widget _meteogram(BuildContext context, bool isLegendVisible) {
   return PhotoView.customChild(
     minScale: PhotoViewComputedScale.contained,
     backgroundDecoration: BoxDecoration(color: Colors.white),
@@ -62,23 +60,15 @@ Widget _meteogramWithLegend(BuildContext context) {
       children: [
         Image(
           image: AssetImage('lib/resources/images/legend.png'),
-          width: MediaQuery.of(context).size.width *
-              MeteogramScreen.LEGEND_PERCENT_WIDTH,
+          width: isLegendVisible ? MediaQuery.of(context).size.width *
+              MeteogramScreen.LEGEND_PERCENT_WIDTH : 0,
         ),
         Image(
           image: AssetImage('lib/resources/images/meteogram.png'),
-          width: MediaQuery.of(context).size.width *
-              MeteogramScreen.METEOGRAM_PERCENT_WIDTH,
+          width: isLegendVisible ? MediaQuery.of(context).size.width *
+              MeteogramScreen.METEOGRAM_PERCENT_WIDTH : MediaQuery.of(context).size.width,
         ),
       ],
     ),
-  );
-}
-
-Widget _meteogram() {
-  return PhotoView(
-    minScale: PhotoViewComputedScale.contained,
-    backgroundDecoration: BoxDecoration(color: Colors.white),
-    imageProvider: AssetImage('lib/resources/images/meteogram.png'),
   );
 }
