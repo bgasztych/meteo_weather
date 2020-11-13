@@ -2,6 +2,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_weather/meteogram_screen.dart';
+import 'package:meteo_weather/widgets/delete_confirmation_dialog.dart';
 
 import 'blocs/blocs.dart';
 import 'models/city.dart';
@@ -66,31 +67,26 @@ class FavouriteCityWidget extends StatelessWidget {
         BlocProvider.of<FavouritesCitiesBloc>(context);
     return Card(
       child: ListTile(
-          title: Text(city.city),
-          subtitle: Text(city.voivodeship),
-          trailing: IconButton(
-              icon: Icon(Icons.delete),
-              onPressed: () => showDialog(
+        title: Text(city.city),
+        subtitle: Text(city.voivodeship),
+        trailing: IconButton(
+            icon: Icon(Icons.delete),
+            onPressed: () => showDialog(
                   context: context,
                   barrierDismissible: false,
-                  builder: (context) => AlertDialog(
-                        title: Text("Remove from favourites?"),
-                        actions: [
-                          FlatButton(
-                              onPressed: () => Navigator.pop(context),
-                              child: Text("Cancel")),
-                          FlatButton(
-                              onPressed: () {
-                                _bloc.add(FavouritesCitiesRemoved(city));
-                                Navigator.pop(context);
-                              },
-                              child: Text("Remove"))
-                        ],
-                      ))),
-          onTap: () => Navigator.push(
-              context,
-              MaterialPageRoute(
-                  builder: (context) => MeteogramScreen(city: city)))),
+                  builder: (context) => DeleteConfirmationDialog(
+                      deleteCallback: () =>
+                          _bloc.add(FavouritesCitiesRemoved(city))),
+                )),
+        onTap: () => Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) => BlocProvider.value(
+                    value: _bloc,
+                    child: MeteogramScreen(city: city),
+                  )),
+        ),
+      ),
     );
   }
 }
