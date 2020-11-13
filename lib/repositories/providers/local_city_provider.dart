@@ -1,7 +1,43 @@
 import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/providers/city_provider.dart';
+import 'package:path/path.dart';
+import 'package:sqflite/sqflite.dart';
 
 class LocalCityProvider implements CityProvider {
+  static const int DB_VERSION = 1;
+  static const String DB_NAME = "meteo.db";
+
+  static Database _database;
+
+  Future<Database> _getDatabase() async {
+    if (_database != null) {
+      return _database;
+    }
+
+    _database = await _initDB();
+    return _database;
+  }
+
+  Future<Database> _initDB() async {
+    return openDatabase(
+      join(await getDatabasesPath(), DB_NAME),
+      onCreate: (db, version) async {
+        await _createDbSchema(db);
+      },
+      version: DB_VERSION,
+    );
+  }
+
+  Future<void> _createDbSchema(Database db) async {
+    await db.execute("""CREATE TABLE cities (
+        id INTEGER PRIMARY KEY,
+        city TEXT,
+        voivodeship TEXT,
+        meteogram TEXT,
+        updated_date INTEGER,
+        )""");
+  }
+
   final List<City> _favouritedCities = [
     City(0, "Wrocław", "dolnoślaskie", null),
     City(1, "Opole", "dolnoślaskie", null),
