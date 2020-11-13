@@ -58,15 +58,21 @@ Widget _meteogram(BuildContext context, bool isLegendVisible) {
     backgroundDecoration: BoxDecoration(color: Colors.white),
     child: Row(
       children: [
-        Image(
-          image: AssetImage('lib/resources/images/legend.png'),
+        AnimatedContainer(
+          duration: Duration(milliseconds: 300),
           width: isLegendVisible ? MediaQuery.of(context).size.width *
               MeteogramScreen.LEGEND_PERCENT_WIDTH : 0,
+          child: Image(
+            image: AssetImage('lib/resources/images/legend.png'),
+          ),
         ),
-        Image(
-          image: AssetImage('lib/resources/images/meteogram.png'),
+        AnimatedContainer(
+          duration: Duration(milliseconds: 300),
           width: isLegendVisible ? MediaQuery.of(context).size.width *
               MeteogramScreen.METEOGRAM_PERCENT_WIDTH : MediaQuery.of(context).size.width,
+          child: Image(
+            image: AssetImage('lib/resources/images/meteogram.png'),
+          ),
         ),
       ],
     ),
