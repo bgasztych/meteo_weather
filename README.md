@@ -2,15 +2,44 @@
 
 Meteo weather.
 
-## Getting Started
+## Getting Started - developers guide
 
-This project is a starting point for a Flutter application.
+You should have Flutter framework installed and working. Refer to Flutter documentation and run `flutter doctor` to make sure you are ok (make sure you have configured Android emulator or have a real device at hand).
 
-A few resources to get you started if this is your first Flutter project:
+Before first application launch you must generate translation files:
 
-- [Lab: Write your first Flutter app](https://flutter.dev/docs/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://flutter.dev/docs/cookbook)
+```
+./scripts/generate_from_arb.sh
+```
 
-For help getting started with Flutter, view our
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+To run application type:
+
+```
+flutter run
+```
+
+## Translations
+
+To extract strings from source code run:
+
+```
+./scripts/extract_to_arb.sh
+```
+
+This generates `lib/resources/messages/intl_messages.arb` file with all extracted
+strings.
+
+Translations are stored in files `lib/resources/messages/intl_{pl,en}.arb`. As of
+now, there are no tools that could help managing them.
+
+Once new translations are added to any of that files, you should regenerate
+code:
+
+```
+./scripts/generate_from_arb.sh
+```
+
+**Note:**
+
+By convention used in this project `lib/i18n.dart` is the only file
+where we call `Intl.message()` function.

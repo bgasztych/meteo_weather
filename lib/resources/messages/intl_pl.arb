@@ -1,0 +1,45 @@
+{
+  "@@last_modified": "2020-11-13T13:24:11.800796",
+  "ok": "OK",
+  "@ok": {
+    "description": "OK",
+    "type": "text",
+    "placeholders": {}
+  },
+  "favourites": "Ulubione",
+  "@favourites": {
+    "description": "Favourites",
+    "type": "text",
+    "placeholders": {}
+  },
+  "noFavouritesCities": "Brak ulubionych miast",
+  "@noFavouritesCities": {
+    "description": "No favourites cities",
+    "type": "text",
+    "placeholders": {}
+  },
+  "fetchFavouritesCitiesFailed": "Nie udało się pobrać ulubionych miast",
+  "@fetchFavouritesCitiesFailed": {
+    "description": "Failed to fetch favourites cities",
+    "type": "text",
+    "placeholders": {}
+  },
+  "searchQueryTooShort": "Fraza wyszukiwania musi składać się z conajmniej 3 liter.",
+  "@searchQueryTooShort": {
+    "description": "Search term must be longer than two letters.",
+    "type": "text",
+    "placeholders": {}
+  },
+  "searchNoResults": "Brak wyników",
+  "@searchNoResults": {
+    "description": "No results found",
+    "type": "text",
+    "placeholders": {}
+  },
+  "searchCitiesFetchFailed": "Nie udało się pobrać pasujących miast",
+  "@searchCitiesFetchFailed": {
+    "description": "Failed to fetch filtered cities",
+    "type": "text",
+    "placeholders": {}
+  }
+}
