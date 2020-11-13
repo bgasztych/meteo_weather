@@ -5,7 +5,7 @@ import 'package:meteo_weather/repositories/providers/local_city_provider.dart';
 import 'package:meteo_weather/repositories/repository.dart';
 
 import 'blocs/blocs.dart';
-import 'favourites_cities_screen.dart';
+import 'screens/favourites_cities_screen.dart';
 import 'i18n.dart';
 
 class MeteoApp extends StatelessWidget {

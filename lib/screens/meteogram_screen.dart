@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:photo_view/photo_view.dart';
 
-import 'blocs/blocs.dart';
-import 'widgets/delete_confirmation_dialog.dart';
+import '../blocs/blocs.dart';
+import '../widgets/delete_confirmation_dialog.dart';
 
 class MeteogramScreen extends StatefulWidget {
   final City city;

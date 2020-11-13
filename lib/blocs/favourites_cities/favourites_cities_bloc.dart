@@ -1,9 +1,11 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:meteo_weather/blocs/blocs.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/repository.dart';
+
+import 'favourites_cities_event.dart';
+import 'favourites_cities_state.dart';
 
 class FavouritesCitiesBloc
     extends Bloc<FavouritesCitiesEvent, FavouritesCitiesState> {

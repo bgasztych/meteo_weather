@@ -26,6 +26,30 @@ class I18n {
   String get ok {
     return Intl.message("OK", name: "ok", desc: "OK");
   }
+
+  String get favourites {
+    return Intl.message("Favourites", name: "favourites", desc: "Favourites");
+  }
+
+  String get noFavouritesCities {
+    return Intl.message("No favourites cities", name: "noFavouritesCities", desc: "No favourites cities");
+  }
+
+  String get fetchFavouritesCitiesFailed {
+    return Intl.message("Failed to fetch favourites cities", name: "fetchFavouritesCitiesFailed", desc: "Failed to fetch favourites cities");
+  }
+
+  String get searchQueryTooShort {
+    return Intl.message("Search term must be longer than two letters.", name: "searchQueryTooShort", desc: "Search term must be longer than two letters.");
+  }
+
+  String get searchNoResults {
+    return Intl.message("No results found", name: "searchNoResults", desc: "No results found");
+  }
+
+  String get searchCitiesFetchFailed {
+    return Intl.message("Failed to fetch filtered cities", name: "searchCitiesFetchFailed", desc: "Failed to fetch filtered cities");
+  }
 }
 
 class I18nDelegate extends LocalizationsDelegate<I18n> {

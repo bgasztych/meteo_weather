@@ -1,11 +1,11 @@
-
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_weather/meteogram_screen.dart';
 import 'package:meteo_weather/widgets/delete_confirmation_dialog.dart';
 
-import 'blocs/blocs.dart';
-import 'models/city.dart';
+import '../blocs/blocs.dart';
+import '../i18n.dart';
+import '../models/city.dart';
+import 'meteogram_screen.dart';
 
 class FavouritesCitiesScreen extends StatelessWidget {
   @override
@@ -16,7 +16,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
         BlocProvider.of<FilteredCitiesBloc>(context);
     return Scaffold(
       appBar: AppBar(
-        title: Text("Favourites"),
+        title: Text(I18n.of(context).favourites),
         actions: [
           IconButton(
             icon: Icon(Icons.search),
@@ -39,7 +39,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
             }
             if (state is FavouritesCitiesSuccess) {
               if (state.cities.isEmpty) {
-                return Center(child: Text("No favourites cities"));
+                return Center(child: Text(I18n.of(context).noFavouritesCities));
               }
               return ListView.builder(
                 itemCount: state.cities.length,
@@ -48,7 +48,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
               );
             }
             if (state is FavouritesCitiesFailure) {
-              return Center(child: Text("Failed to fetch favourites cities"));
+              return Center(child: Text(I18n.of(context).fetchFavouritesCitiesFailed));
             }
             return Container();
           }),
@@ -114,7 +114,7 @@ class CitySearchDelegate extends SearchDelegate<City> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Center(
-            child: Text("Search term must be longer than two letters."),
+            child: Text(I18n.of(context).searchQueryTooShort),
           )
         ],
       );
@@ -131,7 +131,7 @@ class CitySearchDelegate extends SearchDelegate<City> {
           }
           if (state is FilteredCitiesSuccess) {
             if (state.cities.isEmpty) {
-              return Center(child: Text("No results found"));
+              return Center(child: Text(I18n.of(context).searchNoResults));
             }
             return ListView.separated(
                 itemCount: state.cities.length,
@@ -150,7 +150,7 @@ class CitySearchDelegate extends SearchDelegate<City> {
                 });
           }
           if (state is FilteredCitiesFailure) {
-            return Center(child: Text("Failed to fetch filtered cities"));
+            return Center(child: Text(I18n.of(context).searchCitiesFetchFailed));
           }
         });
   }
