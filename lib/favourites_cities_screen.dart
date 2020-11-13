@@ -1,15 +1,11 @@
-import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:meteo_weather/favourites_city_model.dart';
-import 'package:meteo_weather/logger.dart';
 import 'package:meteo_weather/meteogram_screen.dart';
-import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/widgets/delete_confirmation_dialog.dart';
-import 'package:provider/provider.dart';
 
 import 'blocs/blocs.dart';
+import 'models/city.dart';
 
 class FavouritesCitiesScreen extends StatelessWidget {
   @override

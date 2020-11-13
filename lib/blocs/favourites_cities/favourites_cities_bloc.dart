@@ -1,9 +1,7 @@
 import 'dart:async';
 
 import 'package:bloc/bloc.dart';
-import 'package:meta/meta.dart';
 import 'package:meteo_weather/blocs/blocs.dart';
-import 'package:meteo_weather/logger.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/repository.dart';
 
