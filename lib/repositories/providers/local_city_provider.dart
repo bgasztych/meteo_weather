@@ -32,7 +32,7 @@ class LocalCityProvider implements CityProvider {
       onCreate: (db, version) async {
         await _createDbSchema(db);
         // TODO DELETE MOCK
-        await _mockCities();
+        await _mockCities(db);
       },
       version: DB_VERSION,
     );
@@ -45,13 +45,11 @@ class LocalCityProvider implements CityProvider {
         $CITIES_VOIVODESHIP TEXT,
         $CITIES_METEOGRAM TEXT,
         $CITIES_UPDATED_DATE INTEGER,
-        $CITIES_IS_FAVOURITE INTEGER,
+        $CITIES_IS_FAVOURITE INTEGER
         )""");
   }
 
-  Future<void> _mockCities() async {
-    final db = await _getDatabase();
-
+  Future<void> _mockCities(Database db) async {
     List<City> cities = [
       City(0, "Wrocław", "dolnoślaskie", null, DateTime.now()),
       City(1, "Opole", "dolnoślaskie", null, DateTime.now()),
