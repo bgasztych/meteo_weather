@@ -1,12 +1,12 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_weather/repositories/providers/local_city_provider.dart';
 import 'package:meteo_weather/repositories/repository.dart';
 
 import 'blocs/blocs.dart';
-import 'screens/favourites_cities_screen.dart';
 import 'i18n.dart';
+import 'screens/favourites_cities_screen.dart';
 
 class MeteoApp extends StatelessWidget {
   @override

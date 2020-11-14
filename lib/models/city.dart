@@ -1,6 +1,4 @@
 import 'package:equatable/equatable.dart';
-import 'package:flutter/material.dart';
-import 'package:meteo_weather/repositories/providers/local_city_provider.dart';
 
 class City extends Equatable {
   static const String CITIES_ID = "id";
