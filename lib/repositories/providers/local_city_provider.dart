@@ -2,21 +2,30 @@ import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/providers/city_provider.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:async/async.dart';
 
 class LocalCityProvider implements CityProvider {
   static const int DB_VERSION = 1;
   static const String DB_NAME = "meteo.db";
-
   static const String CITIES_TABLE = "cities";
+
+  LocalCityProvider._();
+  static final LocalCityProvider instance = LocalCityProvider._();
+  factory LocalCityProvider() {
+    return LocalCityProvider._();
+  }
   
   static Database _database;
+  final _initDBMemoizer = AsyncMemoizer<Database>();
 
   Future<Database> _getDatabase() async {
     if (_database != null) {
       return _database;
     }
 
-    _database = await _initDB();
+    _database = await _initDBMemoizer.runOnce(() async {
+      return await _initDB();
+    });
     return _database;
   }
 
