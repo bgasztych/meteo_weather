@@ -5,7 +5,6 @@ import 'package:meteo_weather/blocs/simple_bloc_observer.dart';
 import 'package:meteo_weather/logger.dart';
 
 void main() {
-  Logger.initLogger();
   Bloc.observer = SimpleBlocObserver();
   runApp(MeteoApp());
 }
