@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_localizations/flutter_localizations.dart';
 import 'package:meteo_weather/repositories/providers/local_city_provider.dart';
+import 'package:meteo_weather/repositories/providers/remoty_city_provider.dart';
 import 'package:meteo_weather/repositories/repository.dart';
 
 import 'blocs/blocs.dart';
@@ -12,7 +13,7 @@ class MeteoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => Repository(LocalCityProvider()),
+      create: (context) => Repository(LocalCityProvider(), RemoteCityProvider("Stub")),
       child: Builder(builder: (context) {
         return MaterialApp(
           theme: ThemeData(

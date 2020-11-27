@@ -1,10 +1,10 @@
 import 'package:meteo_weather/models/city.dart';
-import 'package:meteo_weather/repositories/providers/city_provider.dart';
+import 'package:meteo_weather/repositories/providers/favourite_city_provider.dart';
 import 'package:path/path.dart';
 import 'package:sqflite/sqflite.dart';
 import 'package:async/async.dart';
 
-class LocalCityProvider implements CityProvider {
+class LocalCityProvider implements FavouriteCityProvider {
   static const int DB_VERSION = 1;
   static const String DB_NAME = "meteo.db";
   static const String CITIES_TABLE = "cities";

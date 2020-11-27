@@ -1,10 +1,13 @@
 import 'package:meteo_weather/models/city.dart';
-import 'package:meteo_weather/repositories/providers/city_provider.dart';
 
-class Repository implements CityProvider{
-  final CityProvider _localCityProvider;
+import 'providers/city_provider.dart';
+import 'providers/favourite_city_provider.dart';
 
-  Repository(this._localCityProvider);
+class Repository implements FavouriteCityProvider{
+  final FavouriteCityProvider _localCityProvider;
+  final CityProvider _remoteCityProvider;
+
+  Repository(this._localCityProvider, this._remoteCityProvider);
 
   @override
   Future<List<City>> getAllCities() async {
