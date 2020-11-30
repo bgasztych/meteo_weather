@@ -10,11 +10,13 @@ class LocalCityProvider implements FavouriteCityProvider {
   static const String CITIES_TABLE = "cities";
 
   LocalCityProvider._();
+
   static final LocalCityProvider instance = LocalCityProvider._();
+
   factory LocalCityProvider() {
     return LocalCityProvider._();
   }
-  
+
   static Database _database;
   final _initDBMemoizer = AsyncMemoizer<Database>();
 
@@ -94,8 +96,8 @@ class LocalCityProvider implements FavouriteCityProvider {
   @override
   Future<List<City>> getFavouritesCities() async {
     final db = await _getDatabase();
-    final List<Map<String, dynamic>> maps = await db
-        .query(CITIES_TABLE, where: "${City.CITIES_IS_FAVOURITE} = ?", whereArgs: [1]);
+    final List<Map<String, dynamic>> maps = await db.query(CITIES_TABLE,
+        where: "${City.CITIES_IS_FAVOURITE} = ?", whereArgs: [1]);
 
     return _createCitiesList(maps);
   }
@@ -111,13 +113,17 @@ class LocalCityProvider implements FavouriteCityProvider {
 
   List<City> _createCitiesList(List<Map<String, dynamic>> maps) {
     return List.generate(maps.length, (i) {
-      return City(
-          maps[i][City.CITIES_ID],
-          maps[i][City.CITIES_CITY],
-          maps[i][City.CITIES_VOIVODESHIP],
-          maps[i][City.CITIES_METEOGRAM],
-          DateTime.fromMillisecondsSinceEpoch(maps[i][City.CITIES_UPDATED_DATE]));
+      return _createCity(maps[i]);
     });
+  }
+
+  City _createCity(Map<String, dynamic> map) {
+    return City(
+        map[City.CITIES_ID],
+        map[City.CITIES_CITY],
+        map[City.CITIES_VOIVODESHIP],
+        map[City.CITIES_METEOGRAM],
+        DateTime.fromMillisecondsSinceEpoch(map[City.CITIES_UPDATED_DATE]));
   }
 
   @override
@@ -134,5 +140,31 @@ class LocalCityProvider implements FavouriteCityProvider {
     await db.update(
         CITIES_TABLE, city.toMap()..addAll({City.CITIES_IS_FAVOURITE: 1}),
         where: "${City.CITIES_ID} = ?", whereArgs: [city.id]);
+  }
+
+  @override
+  Future<City> getCity(int id) async {
+    final db = await _getDatabase();
+    final List<Map<String, dynamic>> maps = await db
+        .query(CITIES_TABLE, where: "${City.CITIES_ID} = ?", whereArgs: [id]);
+
+    return maps.isNotEmpty ? _createCity(maps.single) : null;
+  }
+
+  @override
+  Future<DateTime> getRefreshCitiesDate() async {
+    final db = await _getDatabase();
+    final res = await db
+        .rawQuery("SELECT min(${City.CITIES_UPDATED_DATE}) FROM $CITIES_TABLE");
+    return DateTime.fromMillisecondsSinceEpoch(res.single.values.first);
+  }
+
+  @override
+  Future<void> addCities(List<City> cities) async {
+    final db = await _getDatabase();
+    for (int i = 0; i < cities.length; i++) {
+      await db.insert(CITIES_TABLE, cities[i].toMap(),
+          conflictAlgorithm: ConflictAlgorithm.replace);
+    }
   }
 }

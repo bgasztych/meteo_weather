@@ -92,4 +92,10 @@ class RemoteCityProvider implements CityProvider {
                 city.city.toLowerCase().startsWith(query.toLowerCase()))
             .toList());
   }
+
+  @override
+  Future<City> getCity(int id) {
+    // TODO: implement getCity
+    return Future.delayed(Duration(milliseconds: 300), () => _allCities[id]);
+  }
 }
