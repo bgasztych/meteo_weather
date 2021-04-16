@@ -167,4 +167,12 @@ class LocalCityProvider implements FavouriteCityProvider {
           conflictAlgorithm: ConflictAlgorithm.replace);
     }
   }
+
+  @override
+  Future<DateTime> getRefreshFavouritesCitiesDate() async {
+    final db = await _getDatabase();
+    final res = await db.rawQuery(
+        "SELECT min(${City.CITIES_UPDATED_DATE}) FROM $CITIES_TABLE WHERE ${City.CITIES_IS_FAVOURITE} = 1");
+    return DateTime.fromMillisecondsSinceEpoch(res.single.values.first);
+  }
 }

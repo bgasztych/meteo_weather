@@ -27,6 +27,18 @@ class Repository implements FavouriteCityProvider{
 
   @override
   Future<List<City>> getFavouritesCities() async {
+    final refreshInterval = Duration(hours: 3);
+    try {
+      List<City> cities = await _localCityProvider.getFavouritesCities();
+      final refreshDate = await _localCityProvider.getRefreshFavouritesCitiesDate();
+      if (DateTime.now().difference(refreshDate) > refreshInterval) {
+        cities = await _remoteCityProvider.getFavouritesCities();
+        await _localCityProvider.updateFavouritesCities(cities);
+        return cities;
+      }
+    } on Exception catch (e) {
+      Logger().e(e);
+    }
     return _localCityProvider.getFavouritesCities();
   }
 
@@ -37,18 +49,17 @@ class Repository implements FavouriteCityProvider{
 
   @override
   Future<void> removeCityFromFavourites(City city) async {
-    return _localCityProvider.removeCityFromFavourites(city);
+    _localCityProvider.removeCityFromFavourites(city);
   }
 
   @override
   Future<void> addCityToFavourites(City city) async {
-    return _localCityProvider.addCityToFavourites(city);
+    _localCityProvider.addCityToFavourites(city);
   }
 
   @override
-  Future<City> getCity(int id) {
-    // TODO: implement getCity
-    throw UnimplementedError();
+  Future<City> getCity(int id) async {
+    return _localCityProvider.getCity(id);
   }
 
   @override
@@ -57,9 +68,13 @@ class Repository implements FavouriteCityProvider{
   }
 
   @override
-  Future<void> addCities(List<City> cities) {
-    // TODO: implement addCities
-    throw UnimplementedError();
+  Future<void> addCities(List<City> cities) async {
+    _localCityProvider.addCities(cities);
+  }
+
+  @override
+  Future<DateTime> getRefreshFavouritesCitiesDate() {
+    return _localCityProvider.getRefreshFavouritesCitiesDate();
   }
 
 }
