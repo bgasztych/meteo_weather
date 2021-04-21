@@ -32,7 +32,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
         ],
       ),
       body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
-          cubit: _favouriteCitiesBloc,
+          bloc: _favouriteCitiesBloc,
           builder: (context, state) {
             if (state is FavouritesCitiesLoading) {
               return Center(child: CircularProgressIndicator());
@@ -123,7 +123,7 @@ class CitySearchDelegate extends SearchDelegate<City> {
     filteredBloc.add(FilteredCitiesFiltered(query));
 
     return BlocBuilder(
-        cubit: filteredBloc,
+        bloc: filteredBloc,
         // ignore: missing_return
         builder: (context, state) {
           if (state is FilteredCitiesLoading) {
