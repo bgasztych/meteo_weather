@@ -4,7 +4,7 @@ import '../logger.dart';
 import 'providers/city_provider.dart';
 import 'providers/favourite_city_provider.dart';
 
-class Repository implements FavouriteCityProvider{
+class Repository implements CityProvider, FavouriteCityProvider{
   final FavouriteCityProvider _localCityProvider;
   final CityProvider _remoteCityProvider;
 
@@ -12,39 +12,17 @@ class Repository implements FavouriteCityProvider{
 
   @override
   Future<List<City>> getAllCities() async {
-    try {
-      List<City> cities = await _localCityProvider.getAllCities();
-      if (cities.isEmpty) {
-        cities = await _remoteCityProvider.getAllCities();
-        await _localCityProvider.addCities(cities);
-        return cities;
-      }
-    } on Exception catch (e) {
-      Logger().e(e);
-    }
-    return _localCityProvider.getAllCities();
+    return _remoteCityProvider.getAllCities();
   }
 
   @override
   Future<List<City>> getFavouritesCities() async {
-    final refreshInterval = Duration(hours: 3);
-    try {
-      List<City> cities = await _localCityProvider.getFavouritesCities();
-      final refreshDate = await _localCityProvider.getRefreshFavouritesCitiesDate();
-      if (DateTime.now().difference(refreshDate) > refreshInterval) {
-        cities = await _remoteCityProvider.getFavouritesCities();
-        await _localCityProvider.updateFavouritesCities(cities);
-        return cities;
-      }
-    } on Exception catch (e) {
-      Logger().e(e);
-    }
     return _localCityProvider.getFavouritesCities();
   }
 
   @override
   Future<List<City>> getFilteredCities(String query) async {
-    return _localCityProvider.getFilteredCities(query);
+    return _remoteCityProvider.getFilteredCities(query);
   }
 
   @override
@@ -59,17 +37,12 @@ class Repository implements FavouriteCityProvider{
 
   @override
   Future<City> getCity(int id) async {
-    return _localCityProvider.getCity(id);
+    return _remoteCityProvider.getCity(id);
   }
 
   @override
-  Future<DateTime> getRefreshCitiesDate() async {
-   return _localCityProvider.getRefreshCitiesDate();
-  }
-
-  @override
-  Future<void> addCities(List<City> cities) async {
-    _localCityProvider.addCities(cities);
+  Future<City> getFavouriteCity(int id) {
+    return _localCityProvider.getFavouriteCity(id);
   }
 
   @override

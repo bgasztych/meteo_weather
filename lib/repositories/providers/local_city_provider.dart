@@ -36,8 +36,6 @@ class LocalCityProvider implements FavouriteCityProvider {
       join(await getDatabasesPath(), DB_NAME),
       onCreate: (db, version) async {
         await _createDbSchema(db);
-        // TODO DELETE MOCK
-        await _mockCities(db);
       },
       version: DB_VERSION,
     );
@@ -49,8 +47,7 @@ class LocalCityProvider implements FavouriteCityProvider {
         ${City.CITIES_CITY} TEXT,
         ${City.CITIES_VOIVODESHIP} TEXT,
         ${City.CITIES_METEOGRAM} TEXT,
-        ${City.CITIES_UPDATED_DATE} INTEGER,
-        ${City.CITIES_IS_FAVOURITE} INTEGER
+        ${City.CITIES_UPDATED_DATE} INTEGER
         )""");
   }
 
@@ -86,27 +83,9 @@ class LocalCityProvider implements FavouriteCityProvider {
   }
 
   @override
-  Future<List<City>> getAllCities() async {
-    final db = await _getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query(CITIES_TABLE);
-
-    return _createCitiesList(maps);
-  }
-
-  @override
   Future<List<City>> getFavouritesCities() async {
     final db = await _getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query(CITIES_TABLE,
-        where: "${City.CITIES_IS_FAVOURITE} = ?", whereArgs: [1]);
-
-    return _createCitiesList(maps);
-  }
-
-  @override
-  Future<List<City>> getFilteredCities(String query) async {
-    final db = await _getDatabase();
-    final List<Map<String, dynamic>> maps = await db.query(CITIES_TABLE,
-        where: "${City.CITIES_CITY} LIKE ?", whereArgs: ["$query%"]);
+    final List<Map<String, dynamic>> maps = await db.query(CITIES_TABLE);
 
     return _createCitiesList(maps);
   }
@@ -129,21 +108,20 @@ class LocalCityProvider implements FavouriteCityProvider {
   @override
   Future<void> removeCityFromFavourites(City city) async {
     final db = await _getDatabase();
-    await db.update(
-        CITIES_TABLE, city.toMap()..addAll({City.CITIES_IS_FAVOURITE: 0}),
+    await db.delete(
+        CITIES_TABLE,
         where: "${City.CITIES_ID} = ?", whereArgs: [city.id]);
   }
 
   @override
   Future<void> addCityToFavourites(City city) async {
     final db = await _getDatabase();
-    await db.update(
-        CITIES_TABLE, city.toMap()..addAll({City.CITIES_IS_FAVOURITE: 1}),
-        where: "${City.CITIES_ID} = ?", whereArgs: [city.id]);
+    await db.insert(
+        CITIES_TABLE, city.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 
   @override
-  Future<City> getCity(int id) async {
+  Future<City> getFavouriteCity(int id) async {
     final db = await _getDatabase();
     final List<Map<String, dynamic>> maps = await db
         .query(CITIES_TABLE, where: "${City.CITIES_ID} = ?", whereArgs: [id]);
@@ -152,27 +130,10 @@ class LocalCityProvider implements FavouriteCityProvider {
   }
 
   @override
-  Future<DateTime> getRefreshCitiesDate() async {
-    final db = await _getDatabase();
-    final res = await db
-        .rawQuery("SELECT min(${City.CITIES_UPDATED_DATE}) FROM $CITIES_TABLE");
-    return DateTime.fromMillisecondsSinceEpoch(res.single.values.first);
-  }
-
-  @override
-  Future<void> addCities(List<City> cities) async {
-    final db = await _getDatabase();
-    for (int i = 0; i < cities.length; i++) {
-      await db.insert(CITIES_TABLE, cities[i].toMap(),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-  }
-
-  @override
   Future<DateTime> getRefreshFavouritesCitiesDate() async {
     final db = await _getDatabase();
     final res = await db.rawQuery(
-        "SELECT min(${City.CITIES_UPDATED_DATE}) FROM $CITIES_TABLE WHERE ${City.CITIES_IS_FAVOURITE} = 1");
+        "SELECT min(${City.CITIES_UPDATED_DATE}) FROM $CITIES_TABLE");
     return DateTime.fromMillisecondsSinceEpoch(res.single.values.first);
   }
 }
