@@ -51,37 +51,6 @@ class LocalCityProvider implements FavouriteCityProvider {
         )""");
   }
 
-  Future<void> _mockCities(Database db) async {
-    List<City> cities = [
-      City(0, "Wrocław", "dolnoślaskie", null, DateTime.now()),
-      City(1, "Opole", "dolnoślaskie", null, DateTime.now()),
-      City(2, "Warszawa", "mazowieckie", null, DateTime.now()),
-      City(3, "Poznań", "wielkopolskie", null, DateTime.now()),
-      City(4, "Gdańsk", "pomorskie", null, DateTime.now()),
-      City(5, "Jelenia Góra", "dolnoślaskie", null, DateTime.now()),
-      City(6, "Wronki", "dolnoślaskie", null, DateTime.now()),
-      City(7, "Białystok", "podlaskie", null, DateTime.now()),
-      City(8, "Zielona Góra", "lubuskie", null, DateTime.now()),
-      City(9, "Bydgoszcz", "kujawsko-pomorskie", null, DateTime.now()),
-      City(10, "Gorzów Wielkopolski", "lubuskie", null, DateTime.now()),
-      City(11, "Katowice", "śląskie", null, DateTime.now()),
-      City(12, "Kielce", "świętokrzyskie", null, DateTime.now()),
-      City(13, "Kraków", "małopolskie", null, DateTime.now()),
-      City(14, "Lublin", "lubelskie", null, DateTime.now()),
-      City(15, "Łódź", "łódzkie", null, DateTime.now()),
-      City(16, "Olsztyn", "warmińsko-mazurskie", null, DateTime.now()),
-      City(17, "Rzeszów", "podkarpackie", null, DateTime.now()),
-      City(18, "Szczecin", "zachodniopomorskie", null, DateTime.now()),
-      City(19, "Toruń", "kujawsko-pomorskie", null, DateTime.now()),
-    ];
-
-    for (int i = 0; i < cities.length; i++) {
-      await db.insert(CITIES_TABLE,
-          cities[i].toMap()..addAll({City.CITIES_IS_FAVOURITE: i < 9 ? 1 : 0}),
-          conflictAlgorithm: ConflictAlgorithm.replace);
-    }
-  }
-
   @override
   Future<List<City>> getFavouritesCities() async {
     final db = await _getDatabase();
