@@ -6,7 +6,6 @@ class City extends Equatable {
   static const String CITIES_VOIVODESHIP = "voivodeship";
   static const String CITIES_METEOGRAM = "meteogram";
   static const String CITIES_UPDATED_DATE = "updated_date";
-  static const String CITIES_IS_FAVOURITE = "is_favourite";
 
   final int id;
   final String city;

@@ -77,12 +77,6 @@ class RemoteCityProvider implements CityProvider {
   ];
 
   @override
-  Future<List<City>> getAllCities() async {
-    // TODO: implement getAllCities
-    return Future.delayed(Duration(seconds: 5), () => _allCities);
-  }
-
-  @override
   Future<List<City>> getFilteredCities(String query) async {
     // TODO: implement getFilteredCities
     return Future.delayed(
@@ -97,5 +91,11 @@ class RemoteCityProvider implements CityProvider {
   Future<City> getCity(int id) {
     // TODO: implement getCity
     return Future.delayed(Duration(milliseconds: 300), () => _allCities[id]);
+  }
+
+  @override
+  Future<List<City>> getCitiesByIds(List<int> ids) {
+    // TODO: implement getCitiesByIds
+    throw UnimplementedError();
   }
 }
