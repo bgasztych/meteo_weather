@@ -16,7 +16,8 @@ class Repository implements CityProvider, FavouriteCityProvider{
   }
 
   @override
-  Future<List<City>> getFavouritesCities() async {
+  Future<List<City>> getFavouritesCities({bool forceRefresh}) async {
+    // TODO If (now - updated_date) > refresh interval -> getFavouritesCities from remote and update
     return _localCityProvider.getFavouritesCities();
   }
 
@@ -48,6 +49,11 @@ class Repository implements CityProvider, FavouriteCityProvider{
   @override
   Future<DateTime> getRefreshFavouritesCitiesDate() {
     return _localCityProvider.getRefreshFavouritesCitiesDate();
+  }
+
+  @override
+  Future<void> updateFavouriteCity(City city) {
+    return _localCityProvider.updateFavouriteCity(city);
   }
 
 }

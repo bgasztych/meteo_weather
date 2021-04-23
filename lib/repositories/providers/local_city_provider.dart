@@ -52,7 +52,7 @@ class LocalCityProvider implements FavouriteCityProvider {
   }
 
   @override
-  Future<List<City>> getFavouritesCities() async {
+  Future<List<City>> getFavouritesCities({bool forceRefresh}) async {
     final db = await _getDatabase();
     final List<Map<String, dynamic>> maps = await db.query(CITIES_TABLE);
 
@@ -104,5 +104,12 @@ class LocalCityProvider implements FavouriteCityProvider {
     final res = await db.rawQuery(
         "SELECT min(${City.CITIES_UPDATED_DATE}) FROM $CITIES_TABLE");
     return DateTime.fromMillisecondsSinceEpoch(res.single.values.first);
+  }
+
+  @override
+  Future<void> updateFavouriteCity(City city) async {
+    final db = await _getDatabase();
+    await db.update(
+        CITIES_TABLE, city.toMap(), conflictAlgorithm: ConflictAlgorithm.replace);
   }
 }
