@@ -45,4 +45,8 @@ class Repository {
   Future<void> updateFavouriteCity(City city) async {
     _localCityProvider.updateFavouriteCity(city);
   }
+
+  Future<City> getCity(int id) async {
+    return _remoteCityProvider.getCity(id);
+  }
 }

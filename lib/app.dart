@@ -13,7 +13,7 @@ class MeteoApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return RepositoryProvider(
-      create: (context) => Repository(LocalCityProvider(), RemoteCityProvider("Stub")),
+      create: (context) => Repository(LocalCityProvider(), RemoteCityProvider('https://www.meteo.pl/um')),
       child: Builder(builder: (context) {
         return MaterialApp(
           theme: ThemeData(

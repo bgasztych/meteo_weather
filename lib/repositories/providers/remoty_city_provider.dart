@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:dio/dio.dart';
+import 'package:html/dom.dart';
 import 'package:meteo_weather/models/city.dart';
 import 'package:meteo_weather/repositories/providers/favourite_city_provider.dart';
 
@@ -27,7 +28,7 @@ class RemoteCityProvider implements CityProvider {
       connectTimeout: 10000,
       receiveTimeout: 5000,
       contentType: Headers.jsonContentType,
-      responseType: ResponseType.json,
+      responseType: ResponseType.plain,
     );
     _dio = Dio(options);
   }
@@ -36,17 +37,17 @@ class RemoteCityProvider implements CityProvider {
     _dio.interceptors.add(InterceptorsWrapper(
       onRequest: (RequestOptions options) {
         Logger().i(
-            "${options.method} ${options.baseUrl}${options.path}\nHeaders: ${JsonEncoder.withIndent('  ').convert(options.headers)}\nContent type: ${options.contentType}\n\nBody:\n${JsonEncoder.withIndent('  ').convert(options?.data)}");
+            "${options.method} ${options.uri}\nHeaders: ${JsonEncoder.withIndent('  ').convert(options.headers)}\nContent type: ${options.contentType}\n\nBody:\n${JsonEncoder.withIndent('  ').convert(options?.data)}");
         return options;
       },
       onResponse: (Response response) {
         Logger().i(
-            "${response?.statusCode} ${response?.statusMessage} from ${response.request.baseUrl}${response.request.path}\nHeaders:\n${response.headers}\nResponse:\n${JsonEncoder.withIndent('  ').convert(response?.data)}");
+            "${response?.statusCode} ${response?.statusMessage} from ${response.request.uri}\nHeaders:\n${response.headers}\nResponse:\n${JsonEncoder.withIndent('  ').convert(response?.data)}");
         return response;
       },
       onError: (DioError e) {
         Logger().e(
-            "${e.response?.statusCode} ${e.response?.statusMessage} from ${e.request.baseUrl}${e.request.path}\nHeaders:\n${e.response?.headers}\nResponse:\n${JsonEncoder.withIndent('  ').convert(e.response?.data)}",
+            "${e.response?.statusCode} ${e.response?.statusMessage} from ${e.request.uri}\nHeaders:\n${e.response?.headers}\nResponse:\n${JsonEncoder.withIndent('  ').convert(e.response?.data)}",
             e);
         return e;
       },
@@ -88,7 +89,12 @@ class RemoteCityProvider implements CityProvider {
   }
 
   @override
-  Future<City> getCity(int id) {
+  Future<City> getCity(int id) async {
+    Response response = await _dio.get('/php/meteorogram_id_um.php', queryParameters: {'ntype': '0u', 'id': id.toString()});
+    Document document = Document.html(response.data);
+    var script = document.getElementsByTagName('script')[6].firstChild;
+    Logger().d(script.toString());
+
     // TODO: implement getCity
     return Future.delayed(Duration(milliseconds: 300), () => _allCities[id]);
   }

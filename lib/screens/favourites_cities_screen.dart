@@ -29,6 +29,13 @@ class FavouritesCitiesScreen extends StatelessWidget {
               }
             },
           ),
+          // TODO Delete
+          IconButton(
+            icon: Icon(Icons.animation),
+            onPressed: () async {
+              _filteredCitiesBloc.repository.getCity(983);
+            },
+          ),
         ],
       ),
       body: BlocBuilder<FavouritesCitiesBloc, FavouritesCitiesState>(
