@@ -33,7 +33,7 @@ class FavouritesCitiesScreen extends StatelessWidget {
           IconButton(
             icon: Icon(Icons.animation),
             onPressed: () async {
-              _filteredCitiesBloc.repository.getCity(983);
+              _filteredCitiesBloc.repository.getCity(318);
             },
           ),
         ],

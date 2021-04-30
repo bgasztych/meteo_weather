@@ -100,9 +100,22 @@ class RemoteCityProvider implements CityProvider {
     int x = _parseCoordinate(expX, script);
     int y = _parseCoordinate(expY, script);
     
-    String cityName = document.getElementById('model_napis').text;
+    String city = document.getElementById('model_napis').text.replaceFirst('UM\n\n', '');
+    // for (String c in city.split(',')) {
+    //   Logger().d(c);
+    // }
+    List<String> citySplitted = city.split(',');
 
-    Logger().d('x = $x y = $y voivodeship = $cityName');
+    String cityName = citySplitted[0];
+    String voivodeship = '';
+
+    if (citySplitted.length == 3) {
+      voivodeship = '${citySplitted[1].trimLeft()}, ${citySplitted[2].trimLeft()}';
+    } else if (citySplitted.length == 2) {
+      voivodeship = citySplitted[1].trimLeft();
+    }
+
+    Logger().d('x = $x y = $y cityName = $cityName voivodeship = $voivodeship');
 
     // TODO: implement getCity
     return Future.delayed(Duration(milliseconds: 300), () => _allCities[id]);
