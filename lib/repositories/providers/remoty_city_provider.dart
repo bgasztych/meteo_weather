@@ -92,11 +92,26 @@ class RemoteCityProvider implements CityProvider {
   Future<City> getCity(int id) async {
     Response response = await _dio.get('/php/meteorogram_id_um.php', queryParameters: {'ntype': '0u', 'id': id.toString()});
     Document document = Document.html(response.data);
-    var script = document.getElementsByTagName('script')[6].firstChild;
-    Logger().d(script.toString());
+    String script = document.getElementsByTagName('script')[6].firstChild.toString();
+
+    RegExp expX = RegExp(r"var act_x = \d{2,3};");
+    RegExp expY = RegExp(r"var act_y = \d{2,3};");
+
+    int x = _parseCoordinate(expX, script);
+    int y = _parseCoordinate(expY, script);
+    
+    String cityName = document.getElementById('model_napis').text;
+
+    Logger().d('x = $x y = $y voivodeship = $cityName');
 
     // TODO: implement getCity
     return Future.delayed(Duration(milliseconds: 300), () => _allCities[id]);
+  }
+
+  int _parseCoordinate(RegExp exp, String script) {
+    RegExp numberExp = RegExp(r"\d{2,3}");
+    String coordinate = numberExp.firstMatch(exp.firstMatch(script)[0])[0];
+    return int.parse(coordinate);
   }
 
   @override
